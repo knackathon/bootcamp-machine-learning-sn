@@ -1,0 +1,31 @@
+version: '3.5'
+
+services:
+  mid-service-knackathon:
+    build: './mid-service'
+    image: mid-service:latest
+    hostname: "{{.Service.Name}}-{{.Task.Slot}}"
+    deploy:
+      replicas: 1
+    environment:
+        - SN_URL=https://dev96647.service-now.com
+        - SN_USER=knackathon_mid_service
+        - SN_PASSWD=your_password_goes_here!22
+    networks:
+      - mid-network
+
+      
+  use4:
+    build: './tf-server-service'
+    image: tf-server-service:latest
+    deploy:
+      replicas: 1
+    ports: ["8501:8501"]
+    networks:
+      - mid-network
+      
+    
+networks:
+  mid-network:
+    name: mid-network
+    driver: overlay       
